@@ -1,0 +1,88 @@
+#include "registromainwindow.h"
+#include "ui_registromainwindow.h"
+#include "QDebug"
+#include "QString"
+
+registroMainWindow::registroMainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::registroMainWindow)
+{
+    ui->setupUi(this);
+    CrearTabla();
+}
+
+registroMainWindow::~registroMainWindow()
+{
+    delete ui;
+}
+void registroMainWindow::CrearTabla()
+{
+    QString consulta;
+    consulta.append("CREATE TABLE IF NOT EXISTS usuario("
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    "Nombre VARCHAR(25),"
+                    "Apellido VARCHAR(25),"
+                    "Documento VARCHAR(25),"
+                    "Dia VARCHAR(25),"
+                    "Mes VARCHAR(25),"
+                    "year VARCHAR(25),"
+                    "Contra VARCHAR(25),"
+                    "Verify VARCHAR(25)"
+                    ");");
+    QSqlQuery crear;
+    crear.prepare(consulta);
+    if(crear.exec())
+        {
+            qDebug()<<"Tabla Creada";
+        }
+    else
+        {
+        qDebug()<<"Tabla no Creada"<<crear.lastError();
+    }
+
+}
+
+void registroMainWindow::on_pushButton_clicked()
+{
+    QString nombre=ui->Nombre->text();
+    QString apellido=ui->Apellido->text();
+    QString id=ui->Documento->text();
+    QString dia=ui->Dia->text();
+    QString mes=ui->Mes->text();
+    QString ye=ui->year->text();
+    QString user=ui->Usuario->text();
+    QString contra=ui->Contra->text();
+    QString verify=ui->Verify->text();
+    qDebug() <<nombre;
+    qDebug() <<apellido;
+    qDebug() <<id;
+    qDebug() <<dia;
+    qDebug() <<mes;
+    qDebug() <<ye;
+    qDebug() <<user;
+    qDebug() <<contra;
+    qDebug() <<verify;
+    QString insertar;
+    insertar.append("INSERT INTO usuario("
+                   "Nombre,Apellido,Documento,Dia,Mes,year,Usuario,Contra)"
+                   "value(:nombre,:apellido,:id,:dia,:mes,:year,:usuario,:contra)"
+                   ");");
+    QString insertar_db;
+    insertar_db.prepare(insertar);
+    insertar_db.bindValue(":nombre",nombre);
+    insertar_db.bindValue(":apellido",apellido);
+    insertar_db.bindValue(":id",id);
+    insertar_db.bindValue(":dia",dia);
+    insertar_db.bindValue(":mes",mes);
+    insertar_db.bindValue(":year",ye);
+    insertar_db.bindValue(":usuario",user);
+    insertar_db.bindValue(":contra",contra);
+    if(insertar_db.exec())
+        {
+             qDebug()<<"Datos ingresados";
+        }
+    else
+        {
+             qDebug()<<"Error al ingresar los datos"<<insertar_db.lastError();
+        }
+}
